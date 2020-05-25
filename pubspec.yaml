@@ -26,6 +26,7 @@ dependencies:
   dio: ^3.0.9
   shared_preferences: ^0.5.7+2
   google_maps_flutter: ^0.5.27+3
+  location: ^3.0.2
 
 dev_dependencies:
   flutter_test:

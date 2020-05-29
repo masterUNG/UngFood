@@ -47,5 +47,11 @@
     <string>This app requires access to your location for EWTC Tutorial</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>This app requires access to your location for EWTC Tutorial</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app require Photo for Upload to Server</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app require Camera for Upload to Server</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app require Microphone for Upload to Server</string>
 </dict>
 </plist>

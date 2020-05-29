@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungfood/screens/add_info_shop.dart';
+import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
 
 class InfomationShop extends StatefulWidget {
@@ -8,6 +11,25 @@ class InfomationShop extends StatefulWidget {
 }
 
 class _InfomationShopState extends State<InfomationShop> {
+
+  @override
+  void initState() { 
+    super.initState();
+    readDataUser();
+  }
+
+
+  Future<Null> readDataUser()async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id');
+
+    String url = '${MyConstant().domain}/UngFood/getUserWhereId.php?isAdd=true&id=$id';
+    await Dio().get(url).then((value) {
+      print('value = $value');
+    });
+
+  }
+
   void routeToAddInfo() {
     print('routeToAddInfo Work');
     MaterialPageRoute materialPageRoute = MaterialPageRoute(

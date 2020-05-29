@@ -7,6 +7,7 @@ import 'package:ungfood/model/user_model.dart';
 import 'package:ungfood/screens/main_rider.dart';
 import 'package:ungfood/screens/main_shop.dart';
 import 'package:ungfood/screens/main_user.dart';
+import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
 import 'package:ungfood/utility/normal_dialog.dart';
 
@@ -74,7 +75,7 @@ class _SignInState extends State<SignIn> {
       );
 
       Future<Null> checkAuthen()async{
-        String url = 'http://192.168.64.2/UngFood/getUserWhereUser.php?isAdd=true&User=$user';
+        String url = '${MyConstant().domain}/UngFood/getUserWhereUser.php?isAdd=true&User=$user';
         try {
 
           Response response = await Dio().get(url);

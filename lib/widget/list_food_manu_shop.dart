@@ -26,7 +26,6 @@ class _ListFoodMenuShopState extends State<ListFoodMenuShop> {
   }
 
   Future<Null> readFoodMenu() async {
-
     if (foodModels.length != 0) {
       loadStatus = true;
       status = true;
@@ -95,20 +94,76 @@ class _ListFoodMenuShopState extends State<ListFoodMenuShop> {
                 fit: BoxFit.cover,
               ),
             ),
-            Container(padding: EdgeInsets.all(10.0),
+            Container(
+              padding: EdgeInsets.all(10.0),
               width: MediaQuery.of(context).size.width * 0.5,
               height: MediaQuery.of(context).size.width * 0.4,
-              child: Column(mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(foodModels[index].nameFood, style: MyStyle().mainTitle,),
-                  Text('ราคา ${foodModels[index].price} บาท', style: MyStyle().mainH2Title,),
-                  Text(foodModels[index].detail)
+                  Text(
+                    foodModels[index].nameFood,
+                    style: MyStyle().mainTitle,
+                  ),
+                  Text(
+                    'ราคา ${foodModels[index].price} บาท',
+                    style: MyStyle().mainH2Title,
+                  ),
+                  Text(foodModels[index].detail),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.green,
+                          ),
+                          onPressed: null),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () => deleateFood(foodModels[index]),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
           ],
         ),
       );
+
+  Future<Null> deleateFood(FoodModel foodModel) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title:
+            MyStyle().showTitleH2('คุณต้องการลบ เมนู ${foodModel.nameFood} ?'),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              FlatButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  String url =
+                      '${MyConstant().domain}/UngFood/deleteFoodWhereId.php?isAdd=true&id=${foodModel.id}';
+                  await Dio().get(url).then((value) => readFoodMenu());
+                },
+                child: Text('ยืนยัน'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('ยังไม่ลบ'),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
   Widget addMenuButton() => Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -123,7 +178,8 @@ class _ListFoodMenuShopState extends State<ListFoodMenuShop> {
                     MaterialPageRoute route = MaterialPageRoute(
                       builder: (context) => AddFoodMenu(),
                     );
-                    Navigator.push(context, route).then((value) => readFoodMenu());
+                    Navigator.push(context, route)
+                        .then((value) => readFoodMenu());
                   },
                   child: Icon(Icons.add),
                 ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungfood/model/food_model.dart';
 import 'package:ungfood/screens/add_food_menu.dart';
+import 'package:ungfood/screens/edit_food_menu.dart';
 import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
 
@@ -98,37 +99,46 @@ class _ListFoodMenuShopState extends State<ListFoodMenuShop> {
               padding: EdgeInsets.all(10.0),
               width: MediaQuery.of(context).size.width * 0.5,
               height: MediaQuery.of(context).size.width * 0.4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    foodModels[index].nameFood,
-                    style: MyStyle().mainTitle,
-                  ),
-                  Text(
-                    'ราคา ${foodModels[index].price} บาท',
-                    style: MyStyle().mainH2Title,
-                  ),
-                  Text(foodModels[index].detail),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      IconButton(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      foodModels[index].nameFood,
+                      style: MyStyle().mainTitle,
+                    ),
+                    Text(
+                      'ราคา ${foodModels[index].price} บาท',
+                      style: MyStyle().mainH2Title,
+                    ),
+                    Text(foodModels[index].detail),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        IconButton(
                           icon: Icon(
                             Icons.edit,
                             color: Colors.green,
                           ),
-                          onPressed: null),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                          onPressed: () {
+                            MaterialPageRoute route = MaterialPageRoute(
+                              builder: (context) => EditFoodMenu(foodModel: foodModels[index],),
+                            );
+                            Navigator.push(context, route)
+                                .then((value) => readFoodMenu());
+                          },
                         ),
-                        onPressed: () => deleateFood(foodModels[index]),
-                      ),
-                    ],
-                  ),
-                ],
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () => deleateFood(foodModels[index]),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

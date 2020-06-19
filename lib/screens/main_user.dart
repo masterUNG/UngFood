@@ -1,14 +1,9 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ungfood/model/user_model.dart';
-import 'package:ungfood/screens/show_shop_food_menu.dart';
-import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
 import 'package:ungfood/utility/signout_process.dart';
 import 'package:ungfood/widget/show_list_shop_all.dart';
+import 'package:ungfood/widget/show_status_food_order.dart';
 
 class MainUser extends StatefulWidget {
   @override
@@ -17,8 +12,6 @@ class MainUser extends StatefulWidget {
 
 class _MainUserState extends State<MainUser> {
   String nameUser;
-  List<UserModel> userModels = List();
-  List<Widget> shopCards = List();
   Widget currentWidget;
 
   @override
@@ -26,30 +19,6 @@ class _MainUserState extends State<MainUser> {
     super.initState();
     currentWidget = ShowListShopAll();
     findUser();
-    readShop();
-  }
-
-  Future<Null> readShop() async {
-    String url =
-        '${MyConstant().domain}/UngFood/getUserWhereChooseType.php?isAdd=true&ChooseType=Shop';
-    await Dio().get(url).then((value) {
-      // print('value = $value');
-      var result = json.decode(value.data);
-      int index = 0;
-      for (var map in result) {
-        UserModel model = UserModel.fromJson(map);
-
-        String nameShop = model.nameShop;
-        if (nameShop.isNotEmpty) {
-          print('NameShop = ${model.nameShop}');
-          setState(() {
-            userModels.add(model);
-            shopCards.add(createCard(model, index));
-            index++;
-          });
-        }
-      }
-    });
   }
 
   Future<Null> findUser() async {
@@ -72,14 +41,7 @@ class _MainUserState extends State<MainUser> {
         ],
       ),
       drawer: showDrawer(),
-      body: shopCards.length == 0
-          ? MyStyle().showProgress()
-          : GridView.extent(
-              maxCrossAxisExtent: 180.0,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              children: shopCards,
-            ),
+      body: currentWidget,
     );
   }
 
@@ -91,9 +53,11 @@ class _MainUserState extends State<MainUser> {
               children: <Widget>[
                 showHead(),
                 menuListShop(),
+                menuStatusFoodOrder(),
               ],
             ),
-            Column(mainAxisAlignment: MainAxisAlignment.end,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 menuSignOut(),
               ],
@@ -103,19 +67,48 @@ class _MainUserState extends State<MainUser> {
       );
 
   ListTile menuListShop() {
-    return ListTile(
+    return ListTile(onTap: () {
+      Navigator.pop(context);
+      setState(() {
+        currentWidget = ShowListShopAll();
+      });
+    },
       leading: Icon(Icons.home),
       title: Text('แสดงร้านค้า'),
       subtitle: Text('แสดงร้านค้า ที่สามารถสั่งอาหารได้'),
     );
   }
 
+  ListTile menuStatusFoodOrder() {
+    return ListTile(onTap: () {
+      Navigator.pop(context);
+      setState(() {
+        currentWidget = ShowStatusFoodOrder();
+      });
+    },
+      leading: Icon(Icons.restaurant_menu),
+      title: Text('แสดงรายการอาหารที่สั่ง'),
+      subtitle: Text('แสดงรายการอาหารที่สั่ง และ หรือ ดูสถานะของอาหารที่สั่ง'),
+    );
+  }
+
   Widget menuSignOut() {
-    return Container(decoration: BoxDecoration(color: Colors.red.shade700),
-      child: ListTile(onTap: () => signOutProcess(context),
-        leading: Icon(Icons.exit_to_app,color: Colors.white,),
-        title: Text('Sign Out',style: TextStyle(color: Colors.white),),
-        subtitle: Text('การออกจากแอพ', style: TextStyle(color: Colors.white),),
+    return Container(
+      decoration: BoxDecoration(color: Colors.red.shade700),
+      child: ListTile(
+        onTap: () => signOutProcess(context),
+        leading: Icon(
+          Icons.exit_to_app,
+          color: Colors.white,
+        ),
+        title: Text(
+          'Sign Out',
+          style: TextStyle(color: Colors.white),
+        ),
+        subtitle: Text(
+          'การออกจากแอพ',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -131,37 +124,6 @@ class _MainUserState extends State<MainUser> {
       accountEmail: Text(
         'Login',
         style: TextStyle(color: MyStyle().primaryColor),
-      ),
-    );
-  }
-
-  Widget createCard(UserModel userModel, int index) {
-    return GestureDetector(
-      onTap: () {
-        print('You Click index $index');
-        MaterialPageRoute route = MaterialPageRoute(
-          builder: (context) => ShowShopFoodMenu(
-            userModel: userModels[index],
-          ),
-        );
-        Navigator.push(context, route);
-      },
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 80.0,
-              height: 80.0,
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    '${MyConstant().domain}${userModel.urlPicture}'),
-              ),
-            ),
-            MyStyle().mySizebox(),
-            MyStyle().showTitleH3(userModel.nameShop),
-          ],
-        ),
       ),
     );
   }

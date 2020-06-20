@@ -13,14 +13,13 @@ class ShowListShopAll extends StatefulWidget {
 }
 
 class _ShowListShopAllState extends State<ShowListShopAll> {
-
-List<UserModel> userModels = List();
+  List<UserModel> userModels = List();
   List<Widget> shopCards = List();
 
   @override
   void initState() {
     super.initState();
-    
+
     readShop();
   }
 
@@ -78,19 +77,15 @@ List<UserModel> userModels = List();
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return shopCards.length == 0
-          ? MyStyle().showProgress()
-          : GridView.extent(
-              maxCrossAxisExtent: 180.0,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              children: shopCards,
-            );
-    
+        ? MyStyle().showProgress()
+        : GridView.extent(
+            maxCrossAxisExtent: 180.0,
+            mainAxisSpacing: 10.0,
+            crossAxisSpacing: 10.0,
+            children: shopCards,
+          );
   }
-  
 }

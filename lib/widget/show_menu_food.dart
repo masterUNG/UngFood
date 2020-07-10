@@ -196,32 +196,38 @@ class _ShowMenuFoodState extends State<ShowMenuFood> {
                         Navigator.pop(context);
                         print(
                             'Order ${foodModels[index].nameFood} Amount = $amount');
-                      },
-                      child: Text(
-                        'Order',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 110,
-                    child: RaisedButton(
-                      color: MyStyle().primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+
+                        addOrderToCart();
+                                              },
+                                              child: Text(
+                                                'Order',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 110,
+                                            child: RaisedButton(
+                                              color: MyStyle().primaryColor,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(15)),
+                                              onPressed: () => Navigator.pop(context),
+                                              child: Text(
+                                                'Cancel',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        
+                          void addOrderToCart() {
+                            
+                          }
 }

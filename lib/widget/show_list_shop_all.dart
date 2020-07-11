@@ -70,7 +70,9 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
               ),
             ),
             MyStyle().mySizebox(),
-            MyStyle().showTitleH3(userModel.nameShop),
+            Container(width: 120,
+              child: MyStyle().showTitleH3(userModel.nameShop),
+            ),
           ],
         ),
       ),
@@ -82,7 +84,7 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
     return shopCards.length == 0
         ? MyStyle().showProgress()
         : GridView.extent(
-            maxCrossAxisExtent: 180.0,
+            maxCrossAxisExtent: 220.0,
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,
             children: shopCards,

@@ -4,11 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:ungfood/model/cart_model.dart';
 import 'package:ungfood/model/food_model.dart';
 import 'package:ungfood/model/user_model.dart';
 import 'package:ungfood/utility/my_api.dart';
 import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
+import 'package:ungfood/utility/sqlite_helper.dart';
 
 class ShowMenuFood extends StatefulWidget {
   final UserModel userModel;
@@ -261,5 +263,25 @@ class _ShowMenuFoodState extends State<ShowMenuFood> {
 
     print(
         'idShop = $idShop, nameShop = $nameShop, idFood = $idFood, nameFood = $nameFood, price = $price, amount = $amount, sum = $sumInt, distance = $distanceString, transport = $transport');
+
+    Map<String, dynamic> map = Map();
+
+    map['idShop'] = idShop;
+    map['nameShop'] = nameShop;
+    map['idFood'] = idFood;
+    map['nameFood'] = nameFood;
+    map['price'] = price;
+    map['amount'] = amount.toString();
+    map['sum'] = sumInt.toString();
+    map['distance'] = distanceString;
+    map['transport'] = transport.toString();
+
+    print('map ==> ${map.toString()}');
+
+    CartModel cartModel = CartModel.fromJson(map);
+
+    await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+      print('Insert Success');
+    });
   }
 }

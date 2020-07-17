@@ -1,8 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungfood/model/user_model.dart';
-import 'package:ungfood/utility/my_constant.dart';
 
 class OrderListShop extends StatefulWidget {
   @override

@@ -4,12 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:toast/toast.dart';
 import 'package:ungfood/model/cart_model.dart';
 import 'package:ungfood/model/food_model.dart';
 import 'package:ungfood/model/user_model.dart';
 import 'package:ungfood/utility/my_api.dart';
 import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
+import 'package:ungfood/utility/normal_dialog.dart';
 import 'package:ungfood/utility/sqlite_helper.dart';
 
 class ShowMenuFood extends StatefulWidget {
@@ -280,8 +282,34 @@ class _ShowMenuFoodState extends State<ShowMenuFood> {
 
     CartModel cartModel = CartModel.fromJson(map);
 
-    await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
-      print('Insert Success');
-    });
+    var object = await SQLiteHelper().readAllDataFromSQLite();
+    print('object lenght = ${object.length}');
+
+    if (object.length == 0) {
+      await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+        print('Insert Success');
+        showToast('Insert Success');
+      });
+    } else {
+      String idShopSQLite = object[0].idShop;
+      print('idShopSQLite ==> $idShopSQLite');
+      if (idShop == idShopSQLite) {
+        await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+          print('Insert Success');
+          showToast('Insert Success');
+        });
+      } else {
+        normalDialog(context,
+            'ตะกร้ามี รายการอาหารของ ร้าน ${object[0].nameShop} กรุณา ซืือจากร้านนี่ให้ จบก่อน คะ');
+      }
+    }
+  }
+
+  void showToast(String string) {
+    Toast.show(
+      string,
+      context,
+      duration: Toast.LENGTH_LONG,
+    );
   }
 }

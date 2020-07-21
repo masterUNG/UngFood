@@ -1,6 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:toast/toast.dart';
 import 'package:ungfood/model/cart_model.dart';
+import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
+import 'package:ungfood/utility/normal_dialog.dart';
 import 'package:ungfood/utility/sqlite_helper.dart';
 
 class ShowCart extends StatefulWidget {
@@ -65,7 +70,8 @@ class _ShowCartState extends State<ShowCart> {
             buildListFood(),
             Divider(),
             buildTotal(),
-            buildClearCartButton()
+            buildClearCartButton(),
+            buildOrderButton(),
           ],
         ),
       ),
@@ -76,21 +82,50 @@ class _ShowCartState extends State<ShowCart> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        RaisedButton.icon(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            color: MyStyle().primaryColor,
-            onPressed: () {
-              confirmDeleteAllData();
-            },
-            icon: Icon(
-              Icons.delete_outline,
-              color: Colors.white,
-            ),
-            label: Text(
-              'Clear ตะกร้า',
-              style: TextStyle(color: Colors.white),
-            )),
+        Container(
+          width: 150,
+          child: RaisedButton.icon(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              color: MyStyle().primaryColor,
+              onPressed: () {
+                confirmDeleteAllData();
+              },
+              icon: Icon(
+                Icons.delete_outline,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Clear ตะกร้า',
+                style: TextStyle(color: Colors.white),
+              )),
+        ),
+      ],
+    );
+  }
+
+  Widget buildOrderButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          width: 150,
+          child: RaisedButton.icon(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              color: MyStyle().darkColor,
+              onPressed: () {
+                orderThread();
+              },
+              icon: Icon(
+                Icons.fastfood,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Order',
+                style: TextStyle(color: Colors.white),
+              )),
+        ),
       ],
     );
   }
@@ -204,7 +239,7 @@ class _ShowCartState extends State<ShowCart> {
                       readSQLite();
                     });
                   },
-                ))
+                )),
           ],
         ),
       );
@@ -258,5 +293,63 @@ class _ShowCartState extends State<ShowCart> {
         ],
       ),
     );
+  }
+
+  Future<Null> orderThread() async {
+    DateTime dateTime = DateTime.now();
+    // print(dateTime.toString());
+    String orderDateTime = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+
+    String idShop = cartModels[0].idShop;
+    String nameShop = cartModels[0].nameShop;
+    String distance = cartModels[0].distance;
+    String transport = cartModels[0].transport;
+
+    List<String> idFoods = List();
+    List<String> nameFoods = List();
+    List<String> prices = List();
+    List<String> amounts = List();
+    List<String> sums = List();
+
+    for (var model in cartModels) {
+      idFoods.add(model.idFood);
+      nameFoods.add(model.nameFood);
+      prices.add(model.price);
+      amounts.add(model.amount);
+      sums.add(model.sum);
+    }
+
+    String idFood = idFoods.toString();
+    String nameFood = nameFoods.toString();
+    String price = prices.toString();
+    String amount = amounts.toString();
+    String sum = sums.toString();
+
+    print(
+        'orderDateTime = $orderDateTime, idShop = $idShop, nameShop = $nameShop, distance = $distance, transport = $transport');
+    print(
+        'idFood = $idFood, nameFood = $nameFood, price = $price, amount = $amount, sum = $sum');
+
+    String url =
+        '${MyConstant().domain}/UngFood/addOrder.php?isAdd=true&OrderDateTime=$orderDateTime&idShop=$idShop&NameShop=$nameShop&Distance=$distance&Transport=$transport&idFood=$idFood&NameFood=$nameFood&Price=$price&Amount=$amount&Sum=$sum&idRider=none&Status=UserOrder';
+
+    await Dio().get(url).then((value) {
+      if (value.toString() == 'true') {
+        clearAllSQLite();
+      } else {
+        normalDialog(context, 'ไม่สามารถ Order ได้ กรุณาลองใหม่');
+      }
+    });
+  }
+
+  Future<Null> clearAllSQLite() async {
+    Toast.show(
+      'Order เรียบร้อยแล้ว คะ',
+      context,
+      duration: Toast.LENGTH_LONG,
+    );
+    await SQLiteHelper().deleteAllData().then((value) {
+      readSQLite();
+    });
   }
 }

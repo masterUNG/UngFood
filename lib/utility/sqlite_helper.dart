@@ -58,4 +58,22 @@ class SQLiteHelper {
 
     return cartModels;
   }
+
+  Future<Null> deleteDataWhereId(int id) async {
+    Database database = await connectedDatabase();
+    try {
+      await database.delete(tableDatabase, where: '$idColumn = $id');
+    } catch (e) {
+      print('e delete ==> ${e.toString()}');
+    }
+  }
+
+  Future<Null> deleteAllData() async {
+    Database database = await connectedDatabase();
+    try {
+      await database.delete(tableDatabase);
+    } catch (e) {
+      print('e delete All ==>> ${e.toString()}');
+    }
+  }
 }

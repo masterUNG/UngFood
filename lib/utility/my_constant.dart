@@ -1,7 +1,7 @@
 class MyConstant {
 
   
-  String domain = 'https://1f6ee971f4de.ngrok.io';
+  String domain = 'https://79e97ddbea16.ngrok.io';
   
 
   MyConstant();

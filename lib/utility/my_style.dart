@@ -87,7 +87,16 @@ class MyStyle {
         style: TextStyle(
           fontSize: 16.0,
           color: Colors.blue.shade900,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+
+      Text showTitleH3White(String title) => Text(
+        title,
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
         ),
       );
 
@@ -96,7 +105,16 @@ class MyStyle {
         style: TextStyle(
           fontSize: 16.0,
           color: Colors.red.shade900,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+
+      Text showTitleH3Purple(String title) => Text(
+        title,
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.purple.shade700,
+          fontWeight: FontWeight.w500,
         ),
       );
 

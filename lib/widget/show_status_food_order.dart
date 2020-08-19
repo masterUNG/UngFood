@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:steps_indicator/steps_indicator.dart';
 import 'package:ungfood/model/order_model.dart';
 import 'package:ungfood/utility/my_constant.dart';
 import 'package:ungfood/utility/my_style.dart';
@@ -20,6 +21,8 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
   List<List<String>> listPrices = List();
   List<List<String>> listAmounts = List();
   List<List<String>> listSums = List();
+  List<int> totalInts = List();
+  List<int> statusInts = List();
 
   @override
   void initState() {
@@ -40,20 +43,67 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
         itemCount: orderModels.length,
         itemBuilder: (context, index) => Column(
           children: [
+            MyStyle().mySizebox(),
             buildNameShop(index),
             buildDatatimeOrder(index),
             buildDistance(index),
             buildTransport(index),
             buildHead(),
             buildListViewMenuFood(index),
+            buildTotal(index),
+            MyStyle().mySizebox(),
+            buildStepIndicator(statusInts[index]),
+            MyStyle().mySizebox(),
           ],
         ),
+      );
+
+  Widget buildStepIndicator(int index) => Column(
+        children: [
+          StepsIndicator(
+            lineLength: 80,
+            selectedStep: index,
+            nbSteps: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('Order'),
+              Text('Cooking'),
+              Text('Delivery'),
+              Text('Finish'),
+            ],
+          ),
+        ],
+      );
+
+  Widget buildTotal(int index) => Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                MyStyle().showTitleH3Red('รวมราคาอาหาร '),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyStyle().showTitleH3Purple(totalInts[index].toString()),
+              ],
+            ),
+          ),
+        ],
       );
 
   ListView buildListViewMenuFood(int index) => ListView.builder(
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        itemCount: listMenuFoods.length,
+        itemCount: listMenuFoods[index].length,
         itemBuilder: (context, index2) => Row(
           children: [
             Expanded(
@@ -169,7 +219,7 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
           '${MyConstant().domain}/UngFood/getOrderWhereIdUser.php?isAdd=true&idUser=$idUser';
 
       Response response = await Dio().get(url);
-      // print('respose ==> $response');
+      // print('respose ######==> $response');
       if (response.toString() != 'null') {
         var result = json.decode(response.data);
         for (var map in result) {
@@ -179,13 +229,42 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
           List<String> amounts = changeArrey(model.amount);
           List<String> sums = changeArrey(model.sum);
           // print('menuFoods ==>> $menuFoods');
+
+          int status = 0;
+          switch (model.status) {
+            case 'UserOrder':
+              status = 0;
+              break;
+            case 'ShopCooking':
+              status = 1;
+              break;
+            case 'RiderHandle':
+              status = 2;
+              break;
+            case 'Finish':
+              status = 3;
+              break;
+            default:
+          }
+
+          int total = 0;
+          for (var string in sums) {
+            total = total + int.parse(string.trim());
+          }
+
+          print('total = $total');
+
           setState(() {
             statusOrder = false;
             orderModels.add(model);
+
             listMenuFoods.add(menuFoods);
             listPrices.add(prices);
             listAmounts.add(amounts);
             listSums.add(sums);
+
+            totalInts.add(total);
+            statusInts.add(status);
           });
         }
       }
@@ -195,13 +274,14 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
   List<String> changeArrey(String string) {
     List<String> list = List();
     String myString = string.substring(1, string.length - 1);
-    print('myString = $myString');
+    // print('myString = $myString');
     list = myString.split(',');
     int index = 0;
     for (var string in list) {
       list[index] = string.trim();
       index++;
     }
+    // print('list *****=>> $list');
     return list;
   }
 }

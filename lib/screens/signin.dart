@@ -61,7 +61,10 @@ class _SignInState extends State<SignIn> {
         child: RaisedButton(
           color: MyStyle().darkColor,
           onPressed: () {
-            if (user == null || user.isEmpty || password == null || password.isEmpty) {
+            if (user == null ||
+                user.isEmpty ||
+                password == null ||
+                password.isEmpty) {
               normalDialog(context, 'มีช่องว่าง กรุณากรอกให้ครบ คะ');
             } else {
               checkAuthen();
@@ -74,47 +77,49 @@ class _SignInState extends State<SignIn> {
         ),
       );
 
-      Future<Null> checkAuthen()async{
-        String url = '${MyConstant().domain}/UngFood/getUserWhereUser.php?isAdd=true&User=$user';
-        try {
+  Future<Null> checkAuthen() async {
+    String url =
+        '${MyConstant().domain}/UngFood/getUserWhereUser.php?isAdd=true&User=$user';
+    print('url ===>> $url');
+    try {
+      Response response = await Dio().get(url);
+      print('res = $response');
 
-          Response response = await Dio().get(url);
-          print('res = $response');
-
-          var result = json.decode(response.data);
-          print('result = $result');
-          for (var map in result) {
-            UserModel userModel = UserModel.fromJson(map);
-            if (password == userModel.password) {
-              String chooseType = userModel.chooseType;
-              if (chooseType == 'User') {
-                routeTuService(MainUser(), userModel);
-              } else if (chooseType == 'Shop') {
-                routeTuService(MainShop(), userModel);
-              } else if (chooseType == 'Rider') {
-                routeTuService(MainRider(), userModel);
-              } else {
-                normalDialog(context, 'Error');
-              }
-            } else {
-              normalDialog(context, 'Password ผิด กรุณาลองใหม่ ');
-            }
+      var result = json.decode(response.data);
+      print('result = $result');
+      for (var map in result) {
+        UserModel userModel = UserModel.fromJson(map);
+        if (password == userModel.password) {
+          String chooseType = userModel.chooseType;
+          if (chooseType == 'User') {
+            routeTuService(MainUser(), userModel);
+          } else if (chooseType == 'Shop') {
+            routeTuService(MainShop(), userModel);
+          } else if (chooseType == 'Rider') {
+            routeTuService(MainRider(), userModel);
+          } else {
+            normalDialog(context, 'Error');
           }
-          
-        } catch (e) {
+        } else {
+          normalDialog(context, 'Password ผิด กรุณาลองใหม่ ');
         }
       }
+    } catch (e) {
+      print('Have e Error ===>> ${e.toString()}');
+    }
+  }
 
-      Future<Null> routeTuService(Widget myWidget, UserModel userModel) async {
+  Future<Null> routeTuService(Widget myWidget, UserModel userModel) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('id', userModel.id);
+    preferences.setString('ChooseType', userModel.chooseType);
+    preferences.setString('Name', userModel.name);
 
-        SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString('id', userModel.id);
-        preferences.setString('ChooseType', userModel.chooseType);
-        preferences.setString('Name', userModel.name);
-
-        MaterialPageRoute route = MaterialPageRoute(builder: (context) => myWidget,);
-        Navigator.pushAndRemoveUntil(context, route, (route) => false);
-      }
+    MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => myWidget,
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
 
   Widget userForm() => Container(
         width: 250.0,
@@ -137,7 +142,8 @@ class _SignInState extends State<SignIn> {
 
   Widget passwordForm() => Container(
         width: 250.0,
-        child: TextField(onChanged: (value) => password = value.trim(),
+        child: TextField(
+          onChanged: (value) => password = value.trim(),
           obscureText: true,
           decoration: InputDecoration(
             prefixIcon: Icon(

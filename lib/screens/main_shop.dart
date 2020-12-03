@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:ungfood/utility/my_style.dart';
+import 'package:ungfood/utility/normal_dialog.dart';
 import 'package:ungfood/utility/signout_process.dart';
 import 'package:ungfood/widget/infomation_shop.dart';
 import 'package:ungfood/widget/list_food_manu_shop.dart';
@@ -13,6 +17,34 @@ class MainShop extends StatefulWidget {
 class _MainShopState extends State<MainShop> {
   // Field
   Widget currentWidget = OrderListShop();
+
+  @override
+  void initState() {
+    super.initState();
+    aboutNotification();
+  }
+
+  Future<Null> aboutNotification() async {
+    if (Platform.isAndroid) {
+      print('aboutNoti Work Android');
+
+      FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+      await firebaseMessaging.configure(
+        onLaunch: (message) {
+          print('Noti onLaunch');
+        },
+        onResume: (message) {
+          print('Noti onResume ข้อความจากหน้า Home, หรือ ปิดหน้าจอ');
+        },
+        onMessage: (message) {
+          print('Noti onMessage เปิดหน้าของแอพอยู่');
+          normalDialog(context, 'มีคนสั่งอาหาร เข้ามาคะ');
+        },
+      );
+    } else if (Platform.isIOS) {
+      print('aboutNoti Work iOS');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

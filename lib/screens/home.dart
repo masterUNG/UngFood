@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     checkPreferance();
+    
   }
 
   Future<Null> checkPreferance() async {
@@ -37,7 +40,9 @@ class _HomeState extends State<Home> {
       if (idLogin != null && idLogin.isNotEmpty) {
         String url =
             '${MyConstant().domain}/UngFood/editTokenWhereId.php?isAdd=true&id=$idLogin&Token=$token';
-        await Dio().get(url).then((value) => print('###### Update Token Success #####'));
+        await Dio()
+            .get(url)
+            .then((value) => print('###### Update Token Success #####'));
       }
 
       if (chooseType != null && chooseType.isNotEmpty) {
@@ -113,4 +118,6 @@ class _HomeState extends State<Home> {
       accountEmail: Text('Please Login'),
     );
   }
+
+  
 }

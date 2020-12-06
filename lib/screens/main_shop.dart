@@ -30,15 +30,21 @@ class _MainShopState extends State<MainShop> {
 
       FirebaseMessaging firebaseMessaging = FirebaseMessaging();
       await firebaseMessaging.configure(
-        onLaunch: (message) {
+        onLaunch: (message) async {
           print('Noti onLaunch');
         },
-        onResume: (message) {
-          print('Noti onResume ข้อความจากหน้า Home, หรือ ปิดหน้าจอ');
+        onResume: (message) async {
+          String title = message['data']['title'];
+          String body = message['data']['body'];
+          print('Noti onResume ${message.toString()}');
+          print('title = $title, body = $body');
+          normalDialog2(context, title, body);
         },
-        onMessage: (message) {
-          print('Noti onMessage เปิดหน้าของแอพอยู่');
-          normalDialog(context, 'มีคนสั่งอาหาร เข้ามาคะ');
+        onMessage: (message) async {
+          print('Noti onMessage ${message.toString()}');
+          String title = message['notification']['title'];
+          String notiMessage = message['notification']['body'];
+          normalDialog2(context, title, notiMessage);
         },
       );
     } else if (Platform.isIOS) {

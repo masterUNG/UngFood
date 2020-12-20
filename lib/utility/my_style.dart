@@ -91,7 +91,7 @@ class MyStyle {
         ),
       );
 
-      Text showTitleH3White(String title) => Text(
+  Text showTitleH3White(String title) => Text(
         title,
         style: TextStyle(
           fontSize: 16.0,
@@ -100,7 +100,7 @@ class MyStyle {
         ),
       );
 
-      Text showTitleH3Red(String title) => Text(
+  Text showTitleH3Red(String title) => Text(
         title,
         style: TextStyle(
           fontSize: 16.0,
@@ -109,7 +109,7 @@ class MyStyle {
         ),
       );
 
-      Text showTitleH3Purple(String title) => Text(
+  Text showTitleH3Purple(String title) => Text(
         title,
         style: TextStyle(
           fontSize: 16.0,

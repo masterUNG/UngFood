@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import 'package:toast/toast.dart';
+// import 'package:toast/toast.dart';
 import 'package:ungfood/model/cart_model.dart';
 import 'package:ungfood/model/food_model.dart';
 import 'package:ungfood/model/user_model.dart';
@@ -306,10 +306,10 @@ class _ShowMenuFoodState extends State<ShowMenuFood> {
   }
 
   void showToast(String string) {
-    Toast.show(
-      string,
-      context,
-      duration: Toast.LENGTH_LONG,
-    );
+    // Toast.show(
+    //   string,
+    //   context,
+    //   duration: Toast.LENGTH_LONG,
+    // );
   }
 }

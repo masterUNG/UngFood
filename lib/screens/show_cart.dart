@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
+// import 'package:toast/toast.dart';
 import 'package:ungfood/model/cart_model.dart';
 import 'package:ungfood/model/user_model.dart';
 import 'package:ungfood/utility/my_constant.dart';
@@ -352,11 +352,11 @@ class _ShowCartState extends State<ShowCart> {
   }
 
   Future<Null> clearAllSQLite() async {
-    Toast.show(
-      'Order เรียบร้อยแล้ว คะ',
-      context,
-      duration: Toast.LENGTH_LONG,
-    );
+    // Toast.show(
+    //   'Order เรียบร้อยแล้ว คะ',
+    //   context,
+    //   duration: Toast.LENGTH_LONG,
+    // );
     await SQLiteHelper().deleteAllData().then((value) {
       readSQLite();
     });
